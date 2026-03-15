@@ -6,8 +6,7 @@
 	const navLinks = [
 		{ href: '/', label: 'ภาพรวม' },
 		{ href: '/classroom/161', label: 'ห้องเรียน' },
-		{ href: '/setup', label: 'ตั้งค่าห้อง' },
-		{ href: '/analytics', label: 'สถิติ' }
+		{ href: '/setup', label: 'ตั้งค่าห้อง' }
 	];
 </script>
 

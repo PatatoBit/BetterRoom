@@ -86,10 +86,15 @@
 	const moodRating = 4;
 	const moodLabel = 'ดี';
 
-	const dailyActivity = [40, 65, 55, 80, 72, 85, 60, 73, 90, 68, 75, 88];
-	const hours = ['8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'];
+	const incidentTimeline = [
+		{ label: '08-10', count: 1 },
+		{ label: '10-12', count: 3 },
+		{ label: '12-14', count: 0 },
+		{ label: '14-16', count: 2 },
+		{ label: '16-18', count: 1 }
+	];
 
-	const maxActivity = Math.max(...dailyActivity);
+	const maxIncidentCount = Math.max(...incidentTimeline.map(({ count }) => count), 1);
 	const chartH = 80;
 </script>
 
@@ -112,9 +117,6 @@
 			<!-- ============ LEFT: AI INSIGHT ============ -->
 			<aside class="sidebar sidebar-left">
 				<div class="sidebar-section">
-					<h3 class="sidebar-heading">ดูทั้งหมด</h3>
-					<p class="sidebar-sub">เมื่อวาน &nbsp;<strong>วันนี้</strong></p>
-
 					<!-- Mood -->
 					<div class="mood-block">
 						<div class="mood-face" aria-label="อารมณ์รวม: ดี">
@@ -219,6 +221,43 @@
 
 			<!-- ============ RIGHT: ANALYTICS ============ -->
 			<aside class="sidebar sidebar-right">
+				<div class="sidebar-section">
+					<h3 class="sidebar-heading">รายงานเหตุการณ์ตามช่วงเวลา</h3>
+					<p class="sidebar-sub">สรุปจำนวนเหตุที่พบในแต่ละช่วงของวัน</p>
+					<div class="mini-chart" aria-label="กราฟรายงานเหตุการณ์ตามช่วงเวลา">
+						<svg
+							width="100%"
+							height={chartH + 34}
+							viewBox="0 0 {incidentTimeline.length * 36} {chartH + 34}"
+							preserveAspectRatio="none"
+						>
+							{#each incidentTimeline as item, i}
+								{@const barH = (item.count / maxIncidentCount) * chartH}
+								<rect
+									x={i * 36 + 8}
+									y={chartH - barH}
+									width="20"
+									height={barH}
+									rx="3"
+									fill="var(--ikea-red)"
+									opacity="0.85"
+								/>
+								<text
+									x={i * 36 + 18}
+									y={chartH - barH - 6}
+									text-anchor="middle"
+									class="chart-value"
+								>
+									{item.count}
+								</text>
+								<text x={i * 36 + 18} y={chartH + 18} text-anchor="middle" class="chart-label">
+									{item.label}
+								</text>
+							{/each}
+						</svg>
+					</div>
+				</div>
+
 				<!-- Incidents -->
 				<div class="sidebar-section">
 					<h3 class="sidebar-heading">เหตุเป็นไปได้</h3>
@@ -238,32 +277,6 @@
 								<div class="incident-students">{inc.students.join(', ')}</div>
 							</div>
 						{/each}
-					</div>
-				</div>
-
-				<!-- Daily Activity Graph -->
-				<div class="sidebar-section">
-					<h3 class="sidebar-heading">กราฟแต่ละวัน</h3>
-					<div class="mini-chart" aria-label="กราฟกิจกรรมรายวัน">
-						<svg
-							width="100%"
-							height={chartH + 20}
-							viewBox="0 0 {hours.length * 18} {chartH + 20}"
-							preserveAspectRatio="none"
-						>
-							{#each dailyActivity as val, i}
-								{@const barH = (val / maxActivity) * chartH}
-								<rect
-									x={i * 18 + 2}
-									y={chartH - barH}
-									width="14"
-									height={barH}
-									rx="2"
-									fill="var(--ikea-blue)"
-									opacity="0.85"
-								/>
-							{/each}
-						</svg>
 					</div>
 				</div>
 
@@ -619,6 +632,18 @@
 	.mini-chart {
 		width: 100%;
 		overflow: hidden;
+	}
+
+	.chart-value {
+		font-size: 10px;
+		font-weight: 700;
+		fill: var(--ikea-dark);
+	}
+
+	.chart-label {
+		font-size: 9px;
+		font-weight: 700;
+		fill: #666;
 	}
 
 	/* Cleaning score */
