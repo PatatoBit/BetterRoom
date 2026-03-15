@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&family=Noto+Sans:wght@400;600;700;800;900&display=swap');
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	--ikea-blue: #0058a3;
+	--ikea-yellow: #ffdb00;
+	--ikea-dark: #111111;
+	--ikea-gray: #f5f5f5;
+	--ikea-border: #dfdfdf;
+	--ikea-red: #cc0008;
+	--green-seat: #5dbb63;
+	--yellow-seat: #ffdb00;
+	--red-seat: #cc0008;
+	--font: 'Noto Sans', 'Noto Sans Thai', sans-serif;
+}
+
+html,
+body {
+	font-family: var(--font);
+	background: #ffffff;
+	color: var(--ikea-dark);
+	font-size: 16px;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+button {
+	font-family: var(--font);
+	cursor: pointer;
+}
