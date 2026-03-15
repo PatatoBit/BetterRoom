@@ -77,9 +77,9 @@
 	}
 
 	const scores = [
-		{ label: 'ความสะอาด', value: 92, color: '#5dbb63' },
-		{ label: 'มุมมองในห้อง', value: 85, color: 'var(--ikea-blue)' },
-		{ label: 'ความสะดวกในการสื่อสาร', value: 78, color: '#ffdb00' }
+		{ label: 'ความง่ายในการทำความสะอวด', value: 92, color: '#5dbb63' },
+		{ label: 'การมองเห็น', value: 85, color: 'var(--ikea-blue)' },
+		{ label: 'การมีส่วนร่วม', value: 78, color: '#ffdb00' }
 	];
 
 	const steps = ['นำเข้าข้อมูลห้อง', 'เชิญนักเรียน', 'แผนผังที่แนะนำ'];
