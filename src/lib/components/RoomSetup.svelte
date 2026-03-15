@@ -308,7 +308,11 @@
 
 				<!-- Proposed layout chart -->
 				<div class="proposed-layout">
-					<SeatingChart seats={proposedSeats} />
+					<SeatingChart
+						seats={proposedSeats}
+						layoutKey="setup-proposed"
+						layoutPattern="straight-row-lines"
+					/>
 				</div>
 
 				<div class="step-actions">

@@ -26,6 +26,7 @@
 			teacher: 'Ajarn Somsak',
 			students: 28,
 			mood: 'Good',
+			layoutPattern: 'parliament' as const,
 			shape: 'trapezoid' as const,
 			seats: makeMiniSeats([
 				['occupied', 'occupied', 'warning', 'occupied', 'occupied'],
@@ -39,6 +40,7 @@
 			teacher: 'Ajarn Malee',
 			students: 31,
 			mood: 'Neutral',
+			layoutPattern: 'group-clusters' as const,
 			shape: 'rect-wide' as const,
 			seats: makeMiniSeats([
 				['occupied', 'occupied', 'warning', 'occupied', 'occupied'],
@@ -52,6 +54,7 @@
 			teacher: 'Ajarn Prasert',
 			students: 26,
 			mood: 'Good',
+			layoutPattern: 'multiple-straight-row-lines' as const,
 			shape: 'rect-offset' as const,
 			seats: makeMiniSeats([
 				['occupied', 'occupied', 'warning', 'occupied', 'occupied'],
@@ -95,7 +98,13 @@
 			{#each classes as cls}
 				<a href="/classroom/{cls.id}" class="class-card">
 					<div class="class-card-chart">
-						<SeatingChart seats={cls.seats} mini={true} shape={cls.shape} />
+						<SeatingChart
+							seats={cls.seats}
+							mini={true}
+							shape={cls.shape}
+							layoutKey={cls.id}
+							layoutPattern={cls.layoutPattern}
+						/>
 					</div>
 					<div class="class-card-footer">
 						<span class="class-name">{cls.name}</span>

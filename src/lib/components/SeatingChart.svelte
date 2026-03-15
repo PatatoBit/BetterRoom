@@ -12,9 +12,32 @@
 		mini?: boolean;
 		interactive?: boolean;
 		shape?: 'trapezoid' | 'rect-wide' | 'rect-tall' | 'rect-offset';
+		layoutKey?: string;
+		layoutPattern?: LayoutPattern;
 	}
 
-	let { seats, mini = false, interactive = false, shape = 'trapezoid' }: Props = $props();
+	type Point = [number, number];
+
+	interface PositionedSeat {
+		seat: Seat;
+		x: number;
+		y: number;
+	}
+
+	type LayoutPattern =
+		| 'parliament'
+		| 'group-clusters'
+		| 'straight-row-lines'
+		| 'multiple-straight-row-lines';
+
+	let {
+		seats,
+		mini = false,
+		interactive = false,
+		shape = 'trapezoid',
+		layoutKey = '',
+		layoutPattern
+	}: Props = $props();
 
 	const STATUS_COLORS: Record<SeatStatus, string> = {
 		available: '#5dbb63',
@@ -33,6 +56,227 @@
 
 	const shapePolygon = $derived(SHAPE_POLYGONS[shape]);
 
+	const shapePoints = $derived.by<Point[]>(() =>
+		shapePolygon.split(' ').map((pair) => {
+			const [x, y] = pair.split(',').map(Number);
+			return [x, y];
+		})
+	);
+
+	function clamp(value: number, min: number, max: number): number {
+		return Math.min(max, Math.max(min, value));
+	}
+
+	function hashString(input: string): number {
+		let h = 2166136261;
+		for (let i = 0; i < input.length; i += 1) {
+			h ^= input.charCodeAt(i);
+			h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+		}
+		return h >>> 0;
+	}
+
+	function isPointInPolygon(point: Point, polygon: Point[]): boolean {
+		const [px, py] = point;
+		let inside = false;
+		for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+			const [xi, yi] = polygon[i];
+			const [xj, yj] = polygon[j];
+			const intersect = yi > py !== yj > py && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi;
+			if (intersect) {
+				inside = !inside;
+			}
+		}
+		return inside;
+	}
+
+	function pullInsidePolygon(point: Point, polygon: Point[], target: Point): Point {
+		let [x, y] = point;
+		if (isPointInPolygon([x, y], polygon)) {
+			return [x, y];
+		}
+
+		for (let i = 0; i < 18; i += 1) {
+			x += (target[0] - x) * 0.18;
+			y += (target[1] - y) * 0.18;
+			x = clamp(x, 4, 96);
+			y = clamp(y, 7, 93);
+			if (isPointInPolygon([x, y], polygon)) {
+				return [x, y];
+			}
+		}
+
+		return [target[0], target[1]];
+	}
+
+	function flattenSeats(rows: Seat[][]): Seat[] {
+		return rows.flatMap((row) => row);
+	}
+
+	function choosePattern(rows: Seat[][], allSeats: Seat[]): LayoutPattern {
+		if (layoutPattern) {
+			return layoutPattern;
+		}
+
+		const rowSignature = rows.map((row) => row.length).join('-');
+		const signature = `${shape}:${layoutKey || rowSignature}:${allSeats.length}`;
+		const hash = hashString(signature);
+		const patterns: LayoutPattern[] = [
+			'parliament',
+			'group-clusters',
+			'straight-row-lines',
+			'multiple-straight-row-lines'
+		];
+		return patterns[hash % patterns.length];
+	}
+
+	function buildParliamentLayout(count: number): Point[] {
+		const points: Point[] = [];
+		const ringCount = Math.max(3, Math.min(6, Math.round(Math.sqrt(count) / 1.35)));
+		let seatsPlaced = 0;
+
+		for (let ring = 0; ring < ringCount && seatsPlaced < count; ring += 1) {
+			const seatsRemaining = count - seatsPlaced;
+			const seatsInRing = Math.min(
+				seatsRemaining,
+				Math.max(4, Math.round((count / ringCount) * (0.82 + ring * 0.2)))
+			);
+			const yBase = 20 + (ring / Math.max(1, ringCount - 1)) * 58;
+			const spread = 26 + ring * 5.5;
+
+			for (let i = 0; i < seatsInRing && seatsPlaced < count; i += 1) {
+				const t = seatsInRing <= 1 ? 0.5 : i / (seatsInRing - 1);
+				const x = 50 + (t - 0.5) * spread * 2;
+				const y = yBase + Math.pow(Math.abs(t - 0.5), 1.45) * (mini ? 6.5 : 10.5);
+				points.push([x, y]);
+				seatsPlaced += 1;
+			}
+		}
+
+		return points;
+	}
+
+	function buildGroupClustersLayout(count: number): Point[] {
+		if (count <= 0) {
+			return [];
+		}
+
+		const clusterSize = 4;
+		const clusterCount = Math.ceil(count / clusterSize);
+		const clusterCols = Math.max(2, Math.min(4, Math.ceil(Math.sqrt(clusterCount))));
+		const clusterRows = Math.max(1, Math.ceil(clusterCount / clusterCols));
+		const points: Point[] = [];
+		const localOffsets: Point[] = [
+			[-3.8, -3.4],
+			[3.8, -3.4],
+			[-3.8, 3.4],
+			[3.8, 3.4]
+		];
+
+		for (let i = 0; i < count; i += 1) {
+			const cluster = Math.floor(i / clusterSize);
+			const slot = i % clusterSize;
+			const cr = Math.floor(cluster / clusterCols);
+			const cc = cluster % clusterCols;
+			const colNorm = clusterCols <= 1 ? 0.5 : cc / (clusterCols - 1);
+			const rowNorm = clusterRows <= 1 ? 0.5 : cr / (clusterRows - 1);
+			const centerX = 24 + colNorm * 52;
+			const centerY = 26 + rowNorm * 50;
+			const [ox, oy] = localOffsets[slot];
+			points.push([centerX + ox, centerY + oy]);
+		}
+
+		return points;
+	}
+
+	function buildStraightRowLinesLayout(rows: Seat[][]): Point[] {
+		const points: Point[] = [];
+		if (rows.length === 0) {
+			return [];
+		}
+
+		for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
+			const row = rows[rowIndex];
+			const rowNorm = rows.length <= 1 ? 0.5 : rowIndex / (rows.length - 1);
+			const y = 22 + rowNorm * 56;
+			for (let seatIndex = 0; seatIndex < row.length; seatIndex += 1) {
+				const colNorm = row.length <= 1 ? 0.5 : seatIndex / (row.length - 1);
+				const x = 18 + colNorm * 64;
+				points.push([x, y]);
+			}
+		}
+
+		return points;
+	}
+
+	function buildMultipleStraightRowLinesLayout(rows: Seat[][]): Point[] {
+		const points: Point[] = [];
+		if (rows.length === 0) {
+			return [];
+		}
+
+		const rawY: number[] = [];
+		for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
+			const aisleBreaksBefore = Math.floor(rowIndex / 2);
+			rawY.push(1 + rowIndex * 1.05 + aisleBreaksBefore * 0.48);
+		}
+		const minRaw = Math.min(...rawY);
+		const maxRaw = Math.max(...rawY);
+
+		for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
+			const row = rows[rowIndex];
+			const yNorm = maxRaw === minRaw ? 0.5 : (rawY[rowIndex] - minRaw) / (maxRaw - minRaw);
+			const y = 22 + yNorm * 56;
+
+			const leftCount = Math.ceil(row.length / 2);
+			const rightCount = row.length - leftCount;
+
+			for (let seatIndex = 0; seatIndex < row.length; seatIndex += 1) {
+				if (seatIndex < leftCount) {
+					const t = leftCount <= 1 ? 0.5 : seatIndex / (leftCount - 1);
+					points.push([18 + t * 25, y]);
+				} else {
+					const rightIndex = seatIndex - leftCount;
+					const t = rightCount <= 1 ? 0.5 : rightIndex / (rightCount - 1);
+					points.push([57 + t * 25, y]);
+				}
+			}
+		}
+
+		return points;
+	}
+
+	function buildPatternPoints(pattern: LayoutPattern, rows: Seat[][], count: number): Point[] {
+		switch (pattern) {
+			case 'group-clusters':
+				return buildGroupClustersLayout(count);
+			case 'straight-row-lines':
+				return buildStraightRowLinesLayout(rows);
+			case 'multiple-straight-row-lines':
+				return buildMultipleStraightRowLinesLayout(rows);
+			default:
+				return buildParliamentLayout(count);
+		}
+	}
+
+	const positionedSeats = $derived.by<PositionedSeat[]>(() => {
+		const allSeats = flattenSeats(seats);
+		const pattern = choosePattern(seats, allSeats);
+		const basePoints = buildPatternPoints(pattern, seats, allSeats.length);
+		const polygon = shapePoints;
+		const items: PositionedSeat[] = [];
+
+		for (let index = 0; index < allSeats.length; index += 1) {
+			const seat = allSeats[index];
+			const [baseX, baseY] = basePoints[index] ?? [50, 54];
+			const [x, y] = pullInsidePolygon([baseX, baseY], polygon, [50, 54]);
+
+			items.push({ seat, x, y });
+		}
+
+		return items;
+	});
+
 	let hoveredSeat = $state<string | null>(null);
 </script>
 
@@ -48,40 +292,36 @@
 		<svg class="room-walls" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
 			<polygon points={shapePolygon} />
 		</svg>
-		<div class="seats-grid" style={mini ? 'gap:3px;' : ''}>
-			{#each seats as row}
-				<div class="seat-row" style={mini ? 'gap:3px;' : ''}>
-					{#each row as seat}
-						{#if interactive}
-							<div
-								class="seat"
-								class:mini
-								class:interactive
-								style="background:{STATUS_COLORS[seat.status]};"
-								role="button"
-								aria-label={seat.studentName ?? seat.id}
-								tabindex="0"
-								onmouseenter={() => {
-									hoveredSeat = seat.id;
-								}}
-								onmouseleave={() => {
-									hoveredSeat = null;
-								}}
-							>
-								{#if hoveredSeat === seat.id && seat.studentName}
-									<div class="tooltip">{seat.studentName}</div>
-								{/if}
-							</div>
-						{:else}
-							<div
-								class="seat"
-								class:mini
-								style="background:{STATUS_COLORS[seat.status]};"
-								aria-label={seat.studentName ?? seat.id}
-							></div>
+		<div class="seat-area">
+			{#each positionedSeats as seatPoint}
+				{#if interactive}
+					<div
+						class="seat"
+						class:mini
+						class:interactive
+						style="left:{seatPoint.x}%;top:{seatPoint.y}%;background:{STATUS_COLORS[seatPoint.seat.status]};"
+						role="button"
+						aria-label={seatPoint.seat.studentName ?? seatPoint.seat.id}
+						tabindex="0"
+						onmouseenter={() => {
+							hoveredSeat = seatPoint.seat.id;
+						}}
+						onmouseleave={() => {
+							hoveredSeat = null;
+						}}
+					>
+						{#if hoveredSeat === seatPoint.seat.id && seatPoint.seat.studentName}
+							<div class="tooltip">{seatPoint.seat.studentName}</div>
 						{/if}
-					{/each}
-				</div>
+					</div>
+				{:else}
+					<div
+						class="seat"
+						class:mini
+						style="left:{seatPoint.x}%;top:{seatPoint.y}%;background:{STATUS_COLORS[seatPoint.seat.status]};"
+						aria-label={seatPoint.seat.studentName ?? seatPoint.seat.id}
+					></div>
+				{/if}
 			{/each}
 		</div>
 		{#if !mini}
@@ -207,26 +447,25 @@
 		transform: translateY(-50%);
 	}
 
-	.seats-grid {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		align-items: center;
+	.seat-area {
+		position: relative;
+		width: 100%;
+		flex: 1;
+		min-height: 250px;
 		position: relative;
 		z-index: 1;
 	}
 
-	.seat-row {
-		display: flex;
-		gap: 8px;
-		align-items: center;
+	.room-outline.mini-outline .seat-area {
+		min-height: 0;
 	}
 
 	.seat {
+		position: absolute;
 		width: 40px;
 		height: 32px;
 		border-radius: 5px;
-		position: relative;
+		transform: translate(-50%, -50%);
 		flex-shrink: 0;
 		transition:
 			transform 0.1s,
@@ -240,7 +479,7 @@
 	}
 
 	.seat.interactive:hover {
-		transform: scale(1.12);
+		transform: translate(-50%, -50%) scale(1.08);
 		filter: brightness(1.1);
 		cursor: pointer;
 	}

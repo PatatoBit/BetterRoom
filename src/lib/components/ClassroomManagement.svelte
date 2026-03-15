@@ -22,6 +22,16 @@
 
 	const info = $derived(classData[classId] ?? classData['161']);
 
+	const layoutPatternByClass = {
+		'161': 'parliament',
+		'152': 'group-clusters',
+		'154': 'multiple-straight-row-lines'
+	} as const;
+
+	const activeLayoutPattern = $derived(
+		layoutPatternByClass[classId as keyof typeof layoutPatternByClass] ?? 'straight-row-lines'
+	);
+
 	const seats: Seat[][] = [
 		[
 			{ id: 'A1', status: 'occupied', studentName: 'Napat K.' },
@@ -197,7 +207,12 @@
 				<div class="seating-card">
 					<h3 class="card-title">Interactive Seating Chart</h3>
 					<div class="seating-wrap">
-						<SeatingChart {seats} interactive={true} />
+						<SeatingChart
+							{seats}
+							interactive={true}
+							layoutKey={classId}
+							layoutPattern={activeLayoutPattern}
+						/>
 					</div>
 				</div>
 			</main>
