@@ -207,7 +207,6 @@
 
 				<!-- Seating Chart -->
 				<div class="seating-card">
-					<h3 class="card-title">ผังที่นั่งแบบโต้ตอบ</h3>
 					<div class="seating-wrap">
 						<SeatingChart
 							{seats}

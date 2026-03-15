@@ -2,10 +2,8 @@
 	import SeatingChart from '$lib/components/SeatingChart.svelte';
 
 	const kpis = [
-		{ label: 'จำนวนนักเรียนทั้งหมด', value: '2,440', delta: '+12 สัปดาห์นี้', up: true },
-		{ label: 'การแจ้งเตือนที่ยังเปิดอยู่', value: '156', delta: '-8 จากเมื่อวาน', up: false },
-		{ label: 'ประสิทธิภาพห้องเรียน', value: '298', delta: '+4%', up: true },
-		{ label: 'การแทรกแซงโดย AI', value: '721', delta: '+23 เดือนนี้', up: true }
+		{ label: 'จำนวนนักเรียนทั้งหมด', value: '72', delta: '+12 สัปดาห์นี้', up: true },
+		{ label: 'คำร้องทั้งหมด', value: '298', delta: '-4%', up: true }
 	];
 
 	type SeatStatus = 'available' | 'occupied' | 'warning' | 'conflict' | 'empty';

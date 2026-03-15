@@ -109,6 +109,63 @@
 		return [target[0], target[1]];
 	}
 
+	function relaxSeatPoints(points: Point[], polygon: Point[], isMini: boolean): Point[] {
+		const relaxed = points.map(([x, y]) => [x, y] as Point);
+		const minHorizontalGap = isMini ? 8.5 : 7.2;
+		const minVerticalGap = isMini ? 7.2 : 9.4;
+		const center: Point = [50, 54];
+
+		for (let iteration = 0; iteration < 20; iteration += 1) {
+			let moved = false;
+
+			for (let i = 0; i < relaxed.length; i += 1) {
+				for (let j = i + 1; j < relaxed.length; j += 1) {
+					const first = relaxed[i];
+					const second = relaxed[j];
+					const dx = second[0] - first[0];
+					const dy = second[1] - first[1];
+					const overlapX = minHorizontalGap - Math.abs(dx);
+					const overlapY = minVerticalGap - Math.abs(dy);
+
+					if (overlapX <= 0 || overlapY <= 0) {
+						continue;
+					}
+
+					moved = true;
+					const pushX = overlapX / 2;
+					const pushY = overlapY / 2;
+					const dirX = dx === 0 ? (i % 2 === 0 ? -1 : 1) : Math.sign(dx);
+					const dirY = dy === 0 ? (j % 2 === 0 ? -1 : 1) : Math.sign(dy);
+
+					first[0] -= pushX * dirX;
+					second[0] += pushX * dirX;
+					first[1] -= pushY * dirY;
+					second[1] += pushY * dirY;
+
+					const adjustedFirst = pullInsidePolygon(
+						[clamp(first[0], 8, 92), clamp(first[1], 12, 88)],
+						polygon,
+						center
+					);
+					const adjustedSecond = pullInsidePolygon(
+						[clamp(second[0], 8, 92), clamp(second[1], 12, 88)],
+						polygon,
+						center
+					);
+
+					relaxed[i] = adjustedFirst;
+					relaxed[j] = adjustedSecond;
+				}
+			}
+
+			if (!moved) {
+				break;
+			}
+		}
+
+		return relaxed;
+	}
+
 	function flattenSeats(rows: Seat[][]): Seat[] {
 		return rows.flatMap((row) => row);
 	}
@@ -264,12 +321,15 @@
 		const pattern = choosePattern(seats, allSeats);
 		const basePoints = buildPatternPoints(pattern, seats, allSeats.length);
 		const polygon = shapePoints;
+		const normalizedPoints = basePoints.map(([x, y]) =>
+			pullInsidePolygon([x, y], polygon, [50, 54])
+		);
+		const relaxedPoints = relaxSeatPoints(normalizedPoints, polygon, mini);
 		const items: PositionedSeat[] = [];
 
 		for (let index = 0; index < allSeats.length; index += 1) {
 			const seat = allSeats[index];
-			const [baseX, baseY] = basePoints[index] ?? [50, 54];
-			const [x, y] = pullInsidePolygon([baseX, baseY], polygon, [50, 54]);
+			const [x, y] = relaxedPoints[index] ?? [50, 54];
 
 			items.push({ seat, x, y });
 		}
@@ -468,23 +528,29 @@
 		position: absolute;
 		width: 40px;
 		height: 32px;
+		box-sizing: border-box;
+		border: 2px solid rgba(17, 17, 17, 0.3);
 		border-radius: 5px;
 		transform: translate(-50%, -50%);
 		flex-shrink: 0;
+		box-shadow: 0 2px 6px rgba(17, 17, 17, 0.12);
 		transition:
 			transform 0.1s,
-			filter 0.1s;
+			filter 0.1s,
+			border-color 0.1s;
 	}
 
 	.seat.mini {
 		width: 14px;
 		height: 11px;
+		border-width: 1px;
 		border-radius: 2px;
 	}
 
 	.seat.interactive:hover {
 		transform: translate(-50%, -50%) scale(1.08);
 		filter: brightness(1.1);
+		border-color: rgba(17, 17, 17, 0.55);
 		cursor: pointer;
 	}
 
