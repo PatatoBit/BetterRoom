@@ -41,6 +41,8 @@
 		studentName?: string;
 	}
 
+	type RoomShape = 'trapezoid' | 'rect-wide' | 'rect-tall' | 'rect-offset';
+
 	const proposedSeats: Seat[][] = [
 		[
 			{ id: 'A1', status: 'occupied' },
@@ -64,6 +66,15 @@
 			{ id: 'C5', status: 'occupied' }
 		]
 	];
+
+	const roomShapes: RoomShape[] = ['trapezoid', 'rect-wide', 'rect-tall', 'rect-offset'];
+	let proposedLayoutSeed = $state(0);
+	let proposedRoomShape = $state<RoomShape>('trapezoid');
+
+	function randomizeProposedLayout() {
+		proposedLayoutSeed += 1;
+		proposedRoomShape = roomShapes[Math.floor(Math.random() * roomShapes.length)];
+	}
 
 	const scores = [
 		{ label: 'Cleanliness', value: 92, color: '#5dbb63' },
@@ -310,14 +321,15 @@
 				<div class="proposed-layout">
 					<SeatingChart
 						seats={proposedSeats}
-						layoutKey="setup-proposed"
-						layoutPattern="straight-row-lines"
+						shape={proposedRoomShape}
+						layoutKey={`setup-proposed-${proposedLayoutSeed}`}
 					/>
 				</div>
 
 				<div class="step-actions">
 					<button class="btn-outline" onclick={() => (currentStep = 2)}>← Back</button>
 					<button class="btn-outline">แก้ไขเอง</button>
+					<button class="btn-outline" onclick={randomizeProposedLayout}>Randomize Layout</button>
 					<button
 						class="btn-yellow"
 						onclick={() => {
