@@ -330,9 +330,9 @@
 		</div>
 		{#if !mini}
 			<div class="legend">
-				<span class="legend-dot" style="background:#5dbb63;"></span> Engaged
-				<span class="legend-dot" style="background:#ffdb00;"></span> Warning
-				<span class="legend-dot" style="background:#cc0008;"></span> Conflict
+				<span class="legend-dot" style="background:#5dbb63;"></span> มีส่วนร่วม
+				<span class="legend-dot" style="background:#ffdb00;"></span> ควรระวัง
+				<span class="legend-dot" style="background:#cc0008;"></span> ขัดแย้ง
 			</div>
 		{/if}
 	</div>

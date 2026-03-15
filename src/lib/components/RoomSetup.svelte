@@ -6,10 +6,10 @@
 
 	// Step 1: Room Input
 	const inputMethods = [
-		{ id: 'camera', label: 'Select Camera Input', icon: 'camera' },
-		{ id: 'lidar', label: 'Use LIDAR', icon: 'scan' },
-		{ id: 'floor', label: 'Upload Floor Plan', icon: 'upload' },
-		{ id: 'images', label: 'Overall Images', icon: 'image' }
+		{ id: 'camera', label: 'เลือกข้อมูลจากกล้อง', icon: 'camera' },
+		{ id: 'lidar', label: 'ใช้ LIDAR', icon: 'scan' },
+		{ id: 'floor', label: 'อัปโหลดแปลนห้อง', icon: 'upload' },
+		{ id: 'images', label: 'ภาพรวมของห้อง', icon: 'image' }
 	];
 	let selectedInput = $state<string | null>(null);
 
@@ -77,25 +77,25 @@
 	}
 
 	const scores = [
-		{ label: 'Cleanliness', value: 92, color: '#5dbb63' },
-		{ label: 'Sightlines', value: 85, color: 'var(--ikea-blue)' },
-		{ label: 'Communication Ease', value: 78, color: '#ffdb00' }
+		{ label: 'ความสะอาด', value: 92, color: '#5dbb63' },
+		{ label: 'มุมมองในห้อง', value: 85, color: 'var(--ikea-blue)' },
+		{ label: 'ความสะดวกในการสื่อสาร', value: 78, color: '#ffdb00' }
 	];
 
-	const steps = ['Room Input', 'Invite Students', 'Proposed Layout'];
+	const steps = ['นำเข้าข้อมูลห้อง', 'เชิญนักเรียน', 'แผนผังที่แนะนำ'];
 </script>
 
 <div class="setup-page">
 	<div class="setup-inner">
 		<div class="setup-header">
 			<div>
-				<div class="breadcrumb"><a href="/">Overview</a> / <strong>Room Setup</strong></div>
-				<h1 class="setup-title">Connect Room</h1>
+				<div class="breadcrumb"><a href="/">ภาพรวม</a> / <strong>ตั้งค่าห้อง</strong></div>
+				<h1 class="setup-title">เชื่อมต่อห้องเรียน</h1>
 			</div>
 		</div>
 
 		<!-- Step Indicator -->
-		<div class="step-indicator" aria-label="Setup progress">
+		<div class="step-indicator" aria-label="ความคืบหน้าการตั้งค่า">
 			{#each steps as step, i}
 				<div
 					class="step-item"
@@ -131,8 +131,8 @@
 		<!-- ===== STEP 1: Room Input ===== -->
 		{#if currentStep === 1}
 			<div class="step-content">
-				<h2 class="step-title">How would you like to set up the room?</h2>
-				<p class="step-desc">Choose a method to capture or describe your classroom layout.</p>
+				<h2 class="step-title">คุณต้องการตั้งค่าห้องด้วยวิธีใด?</h2>
+				<p class="step-desc">เลือกวิธีในการเก็บหรืออธิบายผังห้องเรียนของคุณ</p>
 				<div class="method-grid">
 					{#each inputMethods as method, i}
 						<button
@@ -220,7 +220,7 @@
 						onclick={() => (currentStep = 2)}
 						data-tour="setup-step1-continue"
 					>
-						Continue →
+						ดำเนินการต่อ →
 					</button>
 				</div>
 			</div>
@@ -230,7 +230,7 @@
 		{#if currentStep === 2}
 			<div class="step-content">
 				<h2 class="step-title">เชิญนักเรียน</h2>
-				<p class="step-desc">Add student email addresses to invite them to this classroom.</p>
+				<p class="step-desc">เพิ่มอีเมลนักเรียนเพื่อเชิญเข้าห้องเรียนนี้</p>
 
 				<div class="invite-list">
 					{#each studentEmails as email}
@@ -240,7 +240,7 @@
 							<button
 								class="invite-remove"
 								onclick={() => removeEmail(email)}
-								aria-label="Remove {email}"
+								aria-label="ลบ {email}"
 							>
 								<svg
 									width="14"
@@ -266,10 +266,10 @@
 						placeholder="example@mail.com"
 						bind:value={newEmail}
 						onkeydown={(e) => e.key === 'Enter' && addEmail()}
-						aria-label="New student email"
+						aria-label="อีเมลนักเรียนใหม่"
 						data-tour="setup-email-input"
 					/>
-					<button class="add-btn" onclick={addEmail} aria-label="Add email">
+					<button class="add-btn" onclick={addEmail} aria-label="เพิ่มอีเมล">
 						<svg
 							width="18"
 							height="18"
@@ -285,11 +285,11 @@
 				</div>
 
 				<div class="step-actions">
-					<button class="btn-outline" onclick={() => (currentStep = 1)}>← Back</button>
+					<button class="btn-outline" onclick={() => (currentStep = 1)}>← ย้อนกลับ</button>
 					<button
 						class="btn-primary"
 						onclick={() => (currentStep = 3)}
-						data-tour="setup-step2-continue">Continue →</button
+						data-tour="setup-step2-continue">ดำเนินการต่อ →</button
 					>
 				</div>
 			</div>
@@ -299,7 +299,7 @@
 		{#if currentStep === 3}
 			<div class="step-content">
 				<h2 class="step-title">ข้อเสนอแผนผังห้อง</h2>
-				<p class="step-desc">AI-optimized seating arrangement based on your preferences.</p>
+				<p class="step-desc">ผังที่นั่งที่ AI จัดให้ตามความต้องการของคุณ</p>
 
 				<!-- Score badges -->
 				<div class="score-badges">
@@ -338,10 +338,10 @@
 				</div>
 
 				<div class="step-actions">
-					<button class="btn-outline" onclick={() => (currentStep = 2)}>← Back</button>
+					<button class="btn-outline" onclick={() => (currentStep = 2)}>← ย้อนกลับ</button>
 					<button class="btn-outline">แก้ไขเอง</button>
 					<button class="btn-outline" onclick={randomizeProposedLayout} data-tour="setup-randomize"
-						>Randomize Layout</button
+						>สุ่มแผนผัง</button
 					>
 					<button
 						class="btn-yellow"
@@ -349,7 +349,7 @@
 							/* give students a vote */
 						}}>ให้นักเรียนโหวต</button
 					>
-					<a href="/" class="btn-primary" data-tour="setup-create-finish">สร้างใหม่ ✓</a>
+					<a href="/" class="btn-primary" data-tour="setup-create-finish">สร้างห้องเรียน ✓</a>
 				</div>
 			</div>
 		{/if}

@@ -25,57 +25,56 @@
 	const steps: TourStep[] = [
 		{
 			id: 'create-class',
-			title: 'Create Your First Class',
+			title: 'สร้างห้องเรียนแรกของคุณ',
 			description:
-				'Use Add Room to begin the onboarding journey. This starts a new classroom setup flow.',
+				'ใช้ปุ่ม เพิ่มห้อง เพื่อเริ่มการแนะนำการใช้งาน และเริ่มขั้นตอนตั้งค่าห้องเรียนใหม่',
 			route: '/',
 			selector: '[data-tour="overview-add-room"]',
 			advanceByClick: true
 		},
 		{
 			id: 'pick-input',
-			title: 'Choose Room Input Method',
+			title: 'เลือกวิธีนำเข้าข้อมูลห้อง',
 			description:
-				'Pick one setup method. Camera, LIDAR, floor plan, or images all work for this demo.',
+				'เลือกวิธีตั้งค่าหนึ่งแบบ กล้อง, LIDAR, แปลนห้อง หรือรูปภาพ ใช้ได้ทั้งหมดสำหรับเดโมนี้',
 			route: '/setup',
 			selector: '[data-tour="setup-method-camera"]',
 			advanceByClick: true
 		},
 		{
 			id: 'step-one-continue',
-			title: 'Continue To Student Invite',
-			description: 'Proceed to Step 2 after selecting your room input method.',
+			title: 'ไปยังขั้นตอนเชิญนักเรียน',
+			description: 'ไปต่อขั้นตอนที่ 2 หลังจากเลือกวิธีนำเข้าข้อมูลห้องแล้ว',
 			route: '/setup',
 			selector: '[data-tour="setup-step1-continue"]',
 			advanceByClick: true
 		},
 		{
 			id: 'invite-students',
-			title: 'Invite Students',
-			description: 'Add emails in this field to invite students into the newly created classroom.',
+			title: 'เชิญนักเรียน',
+			description: 'เพิ่มอีเมลในช่องนี้เพื่อเชิญนักเรียนเข้าสู่ห้องเรียนที่เพิ่งสร้าง',
 			route: '/setup',
 			selector: '[data-tour="setup-email-input"]'
 		},
 		{
 			id: 'step-two-continue',
-			title: 'Open Proposed Layout',
-			description: 'Move into Step 3 to see the AI-generated seating arrangement.',
+			title: 'เปิดดูแผนผังที่แนะนำ',
+			description: 'ไปยังขั้นตอนที่ 3 เพื่อดูผังที่นั่งที่ AI สร้างให้',
 			route: '/setup',
 			selector: '[data-tour="setup-step2-continue"]',
 			advanceByClick: true
 		},
 		{
 			id: 'randomize-layout',
-			title: 'Try Alternate Layouts',
-			description: 'Use Randomize Layout to preview different seating and room shapes.',
+			title: 'ลองแผนผังแบบอื่น',
+			description: 'ใช้ปุ่ม สุ่มแผนผัง เพื่อดูรูปแบบที่นั่งและทรงห้องที่ต่างกัน',
 			route: '/setup',
 			selector: '[data-tour="setup-randomize"]'
 		},
 		{
 			id: 'finish-create',
-			title: 'Finish And Create',
-			description:
-				'Finalize this onboarding demo by creating the class and returning to the dashboard.',
+			title: 'เสร็จสิ้นและสร้างห้อง',
+			description: 'จบเดโมการแนะนำนี้ด้วยการสร้างห้องเรียน และกลับไปยังหน้าแดชบอร์ด',
 			route: '/setup',
 			selector: '[data-tour="setup-create-finish"]',
 			advanceByClick: true
@@ -231,7 +230,7 @@
 </script>
 
 {#if !active}
-	<button class="tour-replay" onclick={startTour}>Replay Onboarding Demo</button>
+	<button class="tour-replay" onclick={startTour}>เริ่มเดโมแนะนำอีกครั้ง</button>
 {/if}
 
 {#if active}
@@ -244,19 +243,19 @@
 		{/if}
 
 		<div class="tour-dialog" style="top: {tooltipTop}px; left: {tooltipLeft}px;" aria-live="polite">
-			<div class="tour-meta">Step {stepIndex + 1} of {steps.length}</div>
+			<div class="tour-meta">ขั้นตอน {stepIndex + 1} จาก {steps.length}</div>
 			<h3>{currentStep.title}</h3>
 			<p>{currentStep.description}</p>
 
 			{#if targetMissing}
-				<p class="tour-waiting">Waiting for this screen element to appear...</p>
+				<p class="tour-waiting">กำลังรอให้องค์ประกอบนี้ปรากฏบนหน้าจอ...</p>
 			{/if}
 
 			<div class="tour-actions">
-				<button class="btn-flat" onclick={skipTour}>Skip</button>
-				<button class="btn-flat" onclick={prevStep} disabled={stepIndex === 0}>Back</button>
+				<button class="btn-flat" onclick={skipTour}>ข้าม</button>
+				<button class="btn-flat" onclick={prevStep} disabled={stepIndex === 0}>ย้อนกลับ</button>
 				<button class="btn-strong" onclick={nextStep}>
-					{stepIndex === lastStepIndex ? 'Finish' : 'Next'}
+					{stepIndex === lastStepIndex ? 'เสร็จสิ้น' : 'ถัดไป'}
 				</button>
 			</div>
 		</div>

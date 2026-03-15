@@ -15,9 +15,9 @@
 	}
 
 	const classData: Record<string, { name: string; teacher: string }> = {
-		'161': { name: 'Class 161', teacher: 'Ajarn Somsak Chaiprasit' },
-		'152': { name: 'Class 152', teacher: 'Ajarn Malee Wongchai' },
-		'154': { name: 'Class 154', teacher: 'Ajarn Prasert Bunsri' }
+		'161': { name: 'ห้อง 161', teacher: 'อาจารย์สมศักดิ์ ชัยประสิทธิ์' },
+		'152': { name: 'ห้อง 152', teacher: 'อาจารย์มาลี วงศ์ชัย' },
+		'154': { name: 'ห้อง 154', teacher: 'อาจารย์ประเสริฐ บุญศรี' }
 	};
 
 	const info = $derived(classData[classId] ?? classData['161']);
@@ -60,26 +60,26 @@
 	const studentComments = [
 		{
 			name: 'Napat K.',
-			text: 'The lesson was engaging but a bit fast-paced today.',
+			text: 'บทเรียนวันนี้น่าสนใจ แต่จังหวะค่อนข้างเร็วไปนิดค่ะ',
 			time: '10:42 AM'
 		},
-		{ name: 'Pranee S.', text: 'I could not hear clearly from the back row.', time: '10:51 AM' },
+		{ name: 'Pranee S.', text: 'นั่งแถวหลังแล้วได้ยินไม่ค่อยชัดค่ะ', time: '10:51 AM' },
 		{
 			name: 'Araya M.',
-			text: 'Very clear explanations, enjoyed the group activity.',
+			text: 'อธิบายชัดเจนมาก และสนุกกับกิจกรรมกลุ่มค่ะ',
 			time: '11:03 AM'
 		}
 	];
 
 	const incidents = [
 		{
-			type: 'Excessive chatting',
+			type: 'คุยกันมากเกินไป',
 			students: ['Somchai L.', 'Chatree W.'],
 			severity: 'medium',
 			time: '10:38 AM'
 		},
-		{ type: 'Phone usage detected', students: ['Thanat P.'], severity: 'low', time: '11:10 AM' },
-		{ type: 'Repeated distraction', students: ['Chatree W.'], severity: 'high', time: '11:18 AM' }
+		{ type: 'ตรวจพบการใช้โทรศัพท์', students: ['Thanat P.'], severity: 'low', time: '11:10 AM' },
+		{ type: 'เสียสมาธิซ้ำหลายครั้ง', students: ['Chatree W.'], severity: 'high', time: '11:18 AM' }
 	];
 
 	const cleaningScore = 78;
@@ -98,13 +98,13 @@
 		<!-- Page header -->
 		<div class="mv-top">
 			<div>
-				<div class="breadcrumb"><a href="/">Overview</a> / <strong>{info.name}</strong></div>
+				<div class="breadcrumb"><a href="/">ภาพรวม</a> / <strong>{info.name}</strong></div>
 				<h1 class="mv-title">{info.name}</h1>
 				<p class="mv-sub">{info.teacher}</p>
 			</div>
 			<div class="mv-actions">
-				<a href="/setup" class="btn-outline">Edit Layout</a>
-				<button class="btn-primary">Start Session</button>
+				<a href="/setup" class="btn-outline">แก้ไขแผนผัง</a>
+				<button class="btn-primary">เริ่มคาบเรียน</button>
 			</div>
 		</div>
 
@@ -117,7 +117,7 @@
 
 					<!-- Mood -->
 					<div class="mood-block">
-						<div class="mood-face" aria-label="Overall mood: Good">
+						<div class="mood-face" aria-label="อารมณ์รวม: ดี">
 							<svg width="64" height="64" viewBox="0 0 64 64">
 								<circle cx="32" cy="32" r="30" fill="none" stroke="#111" stroke-width="2.5" />
 								<circle cx="22" cy="26" r="3" fill="#111" />
@@ -132,7 +132,7 @@
 							</svg>
 						</div>
 						<div class="mood-label">{moodLabel}</div>
-						<div class="star-rating" aria-label="Rating {moodRating} out of 5">
+						<div class="star-rating" aria-label="คะแนน {moodRating} จาก 5">
 							{#each Array(5) as _, i}
 								<svg width="20" height="20" viewBox="0 0 24 24">
 									<polygon
@@ -151,8 +151,8 @@
 				<div class="sidebar-section">
 					<h3 class="sidebar-heading">สรุป (AI)</h3>
 					<div class="ai-summary-box">
-						Students in rows B–C show high engagement. One conflict zone near seat B6 — consider
-						separating Chatree W. Student in A3 appears distracted; recommend checking in.
+						นักเรียนในแถว B-C มีส่วนร่วมสูง พบจุดขัดแย้งบริเวณที่นั่ง B6 แนะนำให้แยกที่นั่งของ
+						Chatree W. นักเรียนที่ A3 ดูเสียสมาธิ ควรเข้าไปพูดคุยเพิ่มเติม
 					</div>
 				</div>
 
@@ -179,7 +179,7 @@
 				<!-- Live Feed -->
 				<div class="live-feed-card">
 					<div class="live-badge">
-						<span class="live-dot"></span> Live
+						<span class="live-dot"></span> ถ่ายทอดสด
 					</div>
 					<div class="live-video-placeholder">
 						<svg
@@ -199,13 +199,13 @@
 								ry="2"
 							/>
 						</svg>
-						<span>Camera Feed</span>
+						<span>ภาพจากกล้อง</span>
 					</div>
 				</div>
 
 				<!-- Seating Chart -->
 				<div class="seating-card">
-					<h3 class="card-title">Interactive Seating Chart</h3>
+					<h3 class="card-title">ผังที่นั่งแบบโต้ตอบ</h3>
 					<div class="seating-wrap">
 						<SeatingChart
 							{seats}
@@ -244,7 +244,7 @@
 				<!-- Daily Activity Graph -->
 				<div class="sidebar-section">
 					<h3 class="sidebar-heading">กราฟแต่ละวัน</h3>
-					<div class="mini-chart" aria-label="Daily activity chart">
+					<div class="mini-chart" aria-label="กราฟกิจกรรมรายวัน">
 						<svg
 							width="100%"
 							height={chartH + 20}
@@ -282,8 +282,10 @@
 				<!-- Teacher Report -->
 				<div class="sidebar-section">
 					<h3 class="sidebar-heading">รายงานจากครูที่มาสอนวันนี้</h3>
-					<div class="teacher-report-box">เสียงดังมัย ห้องเป็นไง</div>
-					<div class="teacher-report-meta">Submitted 11:30 AM</div>
+					<div class="teacher-report-box">
+						ห้องค่อนข้างมีเสียงรบกวนช่วงท้ายคาบ โดยรวมจัดการได้ดี
+					</div>
+					<div class="teacher-report-meta">ส่งรายงาน 11:30 AM</div>
 				</div>
 			</aside>
 		</div>

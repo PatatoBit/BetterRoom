@@ -4,23 +4,23 @@
 	let searchQuery = $state('');
 
 	const navLinks = [
-		{ href: '/', label: 'Overview' },
-		{ href: '/classroom/161', label: 'Classrooms' },
-		{ href: '/setup', label: 'Room Setup' },
-		{ href: '/analytics', label: 'Analytics' }
+		{ href: '/', label: 'ภาพรวม' },
+		{ href: '/classroom/161', label: 'ห้องเรียน' },
+		{ href: '/setup', label: 'ตั้งค่าห้อง' },
+		{ href: '/analytics', label: 'สถิติ' }
 	];
 </script>
 
 <header class="header">
 	<div class="header-inner">
 		<!-- Logo -->
-		<a href="/" class="logo" aria-label="BetterRoom Home">
+		<a href="/" class="logo" aria-label="หน้าหลัก BetterRoom">
 			<span class="logo-box">BR</span>
 			<span class="logo-text">BetterRoom</span>
 		</a>
 
 		<!-- Nav -->
-		<nav class="nav" aria-label="Main navigation">
+		<nav class="nav" aria-label="เมนูหลัก">
 			{#each navLinks as link}
 				<a
 					href={link.href}
@@ -51,15 +51,15 @@
 			<input
 				type="search"
 				class="search-input"
-				placeholder="Search for a classroom or student..."
+				placeholder="ค้นหาห้องเรียนหรือนักเรียน..."
 				bind:value={searchQuery}
-				aria-label="Search"
+				aria-label="ค้นหา"
 			/>
 		</div>
 
 		<!-- Right Icons -->
 		<div class="right-icons">
-			<button class="icon-btn" aria-label="Notifications">
+			<button class="icon-btn" aria-label="การแจ้งเตือน">
 				<svg
 					width="22"
 					height="22"
@@ -76,7 +76,7 @@
 				</svg>
 				<span class="badge">3</span>
 			</button>
-			<button class="icon-btn" aria-label="Favorites">
+			<button class="icon-btn" aria-label="รายการโปรด">
 				<svg
 					width="22"
 					height="22"
@@ -92,7 +92,7 @@
 					/>
 				</svg>
 			</button>
-			<button class="icon-btn profile-btn" aria-label="User Profile">
+			<button class="icon-btn profile-btn" aria-label="โปรไฟล์ผู้ใช้">
 				<svg
 					width="22"
 					height="22"
@@ -105,7 +105,7 @@
 				>
 					<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
 				</svg>
-				<span class="profile-name">Teacher</span>
+				<span class="profile-name">ครู</span>
 			</button>
 		</div>
 	</div>

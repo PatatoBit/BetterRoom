@@ -2,10 +2,10 @@
 	import SeatingChart from '$lib/components/SeatingChart.svelte';
 
 	const kpis = [
-		{ label: 'Total Students', value: '2,440', delta: '+12 this week', up: true },
-		{ label: 'Active Alerts', value: '156', delta: '-8 from yesterday', up: false },
-		{ label: 'Room Efficiency', value: '298', delta: '+4%', up: true },
-		{ label: 'AI Interventions', value: '721', delta: '+23 this month', up: true }
+		{ label: 'จำนวนนักเรียนทั้งหมด', value: '2,440', delta: '+12 สัปดาห์นี้', up: true },
+		{ label: 'การแจ้งเตือนที่ยังเปิดอยู่', value: '156', delta: '-8 จากเมื่อวาน', up: false },
+		{ label: 'ประสิทธิภาพห้องเรียน', value: '298', delta: '+4%', up: true },
+		{ label: 'การแทรกแซงโดย AI', value: '721', delta: '+23 เดือนนี้', up: true }
 	];
 
 	type SeatStatus = 'available' | 'occupied' | 'warning' | 'conflict' | 'empty';
@@ -22,10 +22,10 @@
 	const classes = [
 		{
 			id: '161',
-			name: 'Class 161',
+			name: 'ห้อง 161',
 			teacher: 'Ajarn Somsak',
 			students: 28,
-			mood: 'Good',
+			mood: 'ดี',
 			layoutPattern: 'parliament' as const,
 			shape: 'trapezoid' as const,
 			seats: makeMiniSeats([
@@ -36,10 +36,10 @@
 		},
 		{
 			id: '152',
-			name: 'Class 152',
+			name: 'ห้อง 152',
 			teacher: 'Ajarn Malee',
 			students: 31,
-			mood: 'Neutral',
+			mood: 'ปกติ',
 			layoutPattern: 'group-clusters' as const,
 			shape: 'rect-wide' as const,
 			seats: makeMiniSeats([
@@ -50,10 +50,10 @@
 		},
 		{
 			id: '154',
-			name: 'Class 154',
+			name: 'ห้อง 154',
 			teacher: 'Ajarn Prasert',
 			students: 26,
-			mood: 'Good',
+			mood: 'ดี',
 			layoutPattern: 'multiple-straight-row-lines' as const,
 			shape: 'rect-offset' as const,
 			seats: makeMiniSeats([
@@ -69,10 +69,10 @@
 	<div class="page-inner">
 		<div class="page-title-row">
 			<div>
-				<h1 class="page-title">Overview</h1>
-				<p class="page-subtitle">Real-time snapshot of all managed classrooms</p>
+				<h1 class="page-title">ภาพรวม</h1>
+				<p class="page-subtitle">ภาพรวมแบบเรียลไทม์ของทุกห้องเรียนที่ดูแล</p>
 			</div>
-			<a href="/setup" class="btn-primary" data-tour="overview-add-room">+ Add Room</a>
+			<a href="/setup" class="btn-primary" data-tour="overview-add-room">+ เพิ่มห้อง</a>
 		</div>
 
 		<!-- KPI Cards -->
@@ -90,8 +90,8 @@
 
 		<!-- Class Cards Grid -->
 		<div class="section-header">
-			<h2 class="section-title">Active Classrooms</h2>
-			<a href="/classroom/161" class="see-all">See all →</a>
+			<h2 class="section-title">ห้องเรียนที่ใช้งานอยู่</h2>
+			<a href="/classroom/161" class="see-all">ดูทั้งหมด →</a>
 		</div>
 
 		<div class="class-grid">
@@ -109,11 +109,11 @@
 					<div class="class-card-footer">
 						<span class="class-name">{cls.name}</span>
 						<div class="class-meta">
-							<span class="meta-tag">{cls.students} students</span>
+							<span class="meta-tag">{cls.students} คน</span>
 							<span
 								class="meta-mood"
-								class:mood-good={cls.mood === 'Good'}
-								class:mood-neutral={cls.mood === 'Neutral'}>{cls.mood}</span
+								class:mood-good={cls.mood === 'ดี'}
+								class:mood-neutral={cls.mood === 'ปกติ'}>{cls.mood}</span
 							>
 						</div>
 					</div>
