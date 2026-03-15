@@ -26,6 +26,7 @@
 			teacher: 'Ajarn Somsak',
 			students: 28,
 			mood: 'Good',
+			shape: 'trapezoid' as const,
 			seats: makeMiniSeats([
 				['occupied', 'occupied', 'warning', 'occupied', 'occupied'],
 				['occupied', 'occupied', 'occupied', 'occupied', 'conflict', 'occupied'],
@@ -38,6 +39,7 @@
 			teacher: 'Ajarn Malee',
 			students: 31,
 			mood: 'Neutral',
+			shape: 'rect-wide' as const,
 			seats: makeMiniSeats([
 				['occupied', 'occupied', 'warning', 'occupied', 'occupied'],
 				['occupied', 'occupied', 'occupied', 'conflict', 'occupied', 'occupied'],
@@ -50,6 +52,7 @@
 			teacher: 'Ajarn Prasert',
 			students: 26,
 			mood: 'Good',
+			shape: 'rect-offset' as const,
 			seats: makeMiniSeats([
 				['occupied', 'occupied', 'warning', 'occupied', 'occupied'],
 				['occupied', 'occupied', 'occupied', 'occupied', 'conflict', 'occupied'],
@@ -92,7 +95,7 @@
 			{#each classes as cls}
 				<a href="/classroom/{cls.id}" class="class-card">
 					<div class="class-card-chart">
-						<SeatingChart seats={cls.seats} mini={true} />
+						<SeatingChart seats={cls.seats} mini={true} shape={cls.shape} />
 					</div>
 					<div class="class-card-footer">
 						<span class="class-name">{cls.name}</span>

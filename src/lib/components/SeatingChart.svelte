@@ -11,9 +11,10 @@
 		seats: Seat[][];
 		mini?: boolean;
 		interactive?: boolean;
+		shape?: 'trapezoid' | 'rect-wide' | 'rect-tall' | 'rect-offset';
 	}
 
-	let { seats, mini = false, interactive = false }: Props = $props();
+	let { seats, mini = false, interactive = false, shape = 'trapezoid' }: Props = $props();
 
 	const STATUS_COLORS: Record<SeatStatus, string> = {
 		available: '#5dbb63',
@@ -23,6 +24,15 @@
 		empty: '#e0e0e0'
 	};
 
+	const SHAPE_POLYGONS = {
+		trapezoid: '10,4 90,4 98,24 98,76 84,96 16,96 2,76 2,24',
+		'rect-wide': '4,10 96,4 96,90 4,96',
+		'rect-tall': '8,4 92,8 88,96 6,92',
+		'rect-offset': '4,4 94,6 98,96 8,94'
+	} as const;
+
+	const shapePolygon = $derived(SHAPE_POLYGONS[shape]);
+
 	let hoveredSeat = $state<string | null>(null);
 </script>
 
@@ -30,11 +40,14 @@
 	<div class="board-label" style={mini ? 'font-size:8px;padding:2px 10px;margin-bottom:6px;' : ''}>
 		กระดาน
 	</div>
-	<div class="room-outline" style={mini ? 'padding:8px;' : ''}>
+	<div class={`room-outline shape-${shape}`} class:mini-outline={mini}>
 		{#if !mini}
 			<span class="room-dim left">8m</span>
 			<span class="room-dim right">8m</span>
 		{/if}
+		<svg class="room-walls" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+			<polygon points={shapePolygon} />
+		</svg>
 		<div class="seats-grid" style={mini ? 'gap:3px;' : ''}>
 			{#each seats as row}
 				<div class="seat-row" style={mini ? 'gap:3px;' : ''}>
@@ -101,16 +114,78 @@
 	}
 
 	.room-outline {
-		border: 2.5px solid var(--ikea-dark);
-		border-radius: 48px 48px 40px 40px / 28px 28px 24px 24px;
-		clip-path: polygon(6% 0%, 94% 0%, 100% 12%, 100% 88%, 94% 100%, 6% 100%, 0% 88%, 0% 12%);
 		padding: 32px 40px;
 		position: relative;
 		min-width: 280px;
+		width: min(680px, 100%);
+		min-height: 390px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		gap: 12px;
+	}
+
+	.room-outline.mini-outline {
+		padding: 8px;
+		min-width: 0;
+		min-height: 0;
+		width: 190px;
+		height: 120px;
+	}
+
+	.room-outline.shape-trapezoid {
+		width: min(680px, 100%);
+	}
+
+	.room-outline.shape-rect-wide {
+		width: min(720px, 100%);
+	}
+
+	.room-outline.shape-rect-tall {
+		width: min(620px, 100%);
+	}
+
+	.room-outline.shape-rect-offset {
+		width: min(660px, 100%);
+	}
+
+	.room-outline.mini-outline.shape-trapezoid {
+		width: 184px;
+		height: 122px;
+	}
+
+	.room-outline.mini-outline.shape-rect-wide {
+		width: 204px;
+		height: 110px;
+	}
+
+	.room-outline.mini-outline.shape-rect-tall {
+		width: 168px;
+		height: 128px;
+	}
+
+	.room-outline.mini-outline.shape-rect-offset {
+		width: 194px;
+		height: 116px;
+	}
+
+	.room-walls {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	.room-walls polygon {
+		fill: none;
+		stroke: var(--ikea-dark);
+		stroke-width: 0.9;
+		vector-effect: non-scaling-stroke;
+	}
+
+	:global(.mini) .room-walls polygon {
+		stroke-width: 1.3;
 	}
 
 	.room-dim {
@@ -137,6 +212,8 @@
 		flex-direction: column;
 		gap: 8px;
 		align-items: center;
+		position: relative;
+		z-index: 1;
 	}
 
 	.seat-row {
