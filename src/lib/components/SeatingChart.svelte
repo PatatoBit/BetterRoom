@@ -299,7 +299,9 @@
 						class="seat"
 						class:mini
 						class:interactive
-						style="left:{seatPoint.x}%;top:{seatPoint.y}%;background:{STATUS_COLORS[seatPoint.seat.status]};"
+						style="left:{seatPoint.x}%;top:{seatPoint.y}%;background:{STATUS_COLORS[
+							seatPoint.seat.status
+						]};"
 						role="button"
 						aria-label={seatPoint.seat.studentName ?? seatPoint.seat.id}
 						tabindex="0"
@@ -318,7 +320,9 @@
 					<div
 						class="seat"
 						class:mini
-						style="left:{seatPoint.x}%;top:{seatPoint.y}%;background:{STATUS_COLORS[seatPoint.seat.status]};"
+						style="left:{seatPoint.x}%;top:{seatPoint.y}%;background:{STATUS_COLORS[
+							seatPoint.seat.status
+						]};"
 						aria-label={seatPoint.seat.studentName ?? seatPoint.seat.id}
 					></div>
 				{/if}
