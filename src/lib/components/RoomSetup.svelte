@@ -134,12 +134,13 @@
 				<h2 class="step-title">How would you like to set up the room?</h2>
 				<p class="step-desc">Choose a method to capture or describe your classroom layout.</p>
 				<div class="method-grid">
-					{#each inputMethods as method}
+					{#each inputMethods as method, i}
 						<button
 							class="method-btn"
 							class:selected={selectedInput === method.id}
 							onclick={() => (selectedInput = method.id)}
 							aria-pressed={selectedInput === method.id}
+							data-tour={i === 0 ? 'setup-method-camera' : undefined}
 						>
 							<div class="method-icon">
 								{#if method.icon === 'camera'}
@@ -213,7 +214,12 @@
 					{/each}
 				</div>
 				<div class="step-actions">
-					<button class="btn-primary" disabled={!selectedInput} onclick={() => (currentStep = 2)}>
+					<button
+						class="btn-primary"
+						disabled={!selectedInput}
+						onclick={() => (currentStep = 2)}
+						data-tour="setup-step1-continue"
+					>
 						Continue →
 					</button>
 				</div>
@@ -261,6 +267,7 @@
 						bind:value={newEmail}
 						onkeydown={(e) => e.key === 'Enter' && addEmail()}
 						aria-label="New student email"
+						data-tour="setup-email-input"
 					/>
 					<button class="add-btn" onclick={addEmail} aria-label="Add email">
 						<svg
@@ -279,7 +286,11 @@
 
 				<div class="step-actions">
 					<button class="btn-outline" onclick={() => (currentStep = 1)}>← Back</button>
-					<button class="btn-primary" onclick={() => (currentStep = 3)}>Continue →</button>
+					<button
+						class="btn-primary"
+						onclick={() => (currentStep = 3)}
+						data-tour="setup-step2-continue">Continue →</button
+					>
 				</div>
 			</div>
 		{/if}
@@ -329,14 +340,16 @@
 				<div class="step-actions">
 					<button class="btn-outline" onclick={() => (currentStep = 2)}>← Back</button>
 					<button class="btn-outline">แก้ไขเอง</button>
-					<button class="btn-outline" onclick={randomizeProposedLayout}>Randomize Layout</button>
+					<button class="btn-outline" onclick={randomizeProposedLayout} data-tour="setup-randomize"
+						>Randomize Layout</button
+					>
 					<button
 						class="btn-yellow"
 						onclick={() => {
 							/* give students a vote */
 						}}>ให้นักเรียนโหวต</button
 					>
-					<a href="/" class="btn-primary">สร้างใหม่ ✓</a>
+					<a href="/" class="btn-primary" data-tour="setup-create-finish">สร้างใหม่ ✓</a>
 				</div>
 			</div>
 		{/if}

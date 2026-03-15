@@ -2,6 +2,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import '../styles/global.scss';
 	import Header from '$lib/components/Header.svelte';
+	import OnboardingTour from '$lib/components/OnboardingTour.svelte';
 
 	let { children } = $props();
 </script>
@@ -12,3 +13,4 @@
 
 <Header />
 {@render children()}
+<OnboardingTour />

@@ -72,7 +72,7 @@
 				<h1 class="page-title">Overview</h1>
 				<p class="page-subtitle">Real-time snapshot of all managed classrooms</p>
 			</div>
-			<a href="/setup" class="btn-primary">+ Add Room</a>
+			<a href="/setup" class="btn-primary" data-tour="overview-add-room">+ Add Room</a>
 		</div>
 
 		<!-- KPI Cards -->
